@@ -13,10 +13,9 @@ bool _isPublicAuthRoute(String path) {
 class AuthInterceptor extends Interceptor {
   AuthInterceptor(
     this._storage, {
-    required Future<bool> Function() onRefresh,
-    required void Function() onSessionExpired,
-  })  : _onRefresh = onRefresh,
-        _onSessionExpired = onSessionExpired;
+    required this._onRefresh,
+    required this._onSessionExpired,
+  });
 
   final TokenStorage _storage;
   final Future<bool> Function() _onRefresh;

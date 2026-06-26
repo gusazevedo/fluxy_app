@@ -1,6 +1,6 @@
-String _2(int n) => n.toString().padLeft(2, '0');
+String _twoDigits(int n) => n.toString().padLeft(2, '0');
 
-String apiDateToString(DateTime d) => '${d.year}-${_2(d.month)}-${_2(d.day)}';
+String apiDateToString(DateTime d) => '${d.year}-${_twoDigits(d.month)}-${_twoDigits(d.day)}';
 
 DateTime parseApiDate(String s) {
   final p = s.split('-').map(int.parse).toList();

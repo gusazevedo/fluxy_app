@@ -6,27 +6,26 @@ sealed class Failure {
 }
 
 class NetworkFailure extends Failure {
-  const NetworkFailure([String m = 'Sem conexão. Verifique sua internet.']) : super(m);
+  const NetworkFailure([super.m = 'Sem conexão. Verifique sua internet.']);
 }
 class UnauthorizedFailure extends Failure {
-  const UnauthorizedFailure([String m = 'Sua sessão expirou.']) : super(m);
+  const UnauthorizedFailure([super.m = 'Sua sessão expirou.']);
 }
 class ForbiddenFailure extends Failure {
-  const ForbiddenFailure([String m = 'Acesso negado.']) : super(m);
+  const ForbiddenFailure([super.m = 'Acesso negado.']);
 }
 class NotFoundFailure extends Failure {
-  const NotFoundFailure([String m = 'Não encontrado.']) : super(m);
+  const NotFoundFailure([super.m = 'Não encontrado.']);
 }
 class ValidationFailure extends Failure {
-  const ValidationFailure(String m, {Map<String, List<String>> fields = const {}})
-      : super(m, fields: fields);
+  const ValidationFailure(super.m, {super.fields});
 }
 class ConflictFailure extends Failure {
-  const ConflictFailure([String m = 'Conflito.']) : super(m);
+  const ConflictFailure([super.m = 'Conflito.']);
 }
 class ServerFailure extends Failure {
-  const ServerFailure([String m = 'Algo deu errado. Tente novamente.']) : super(m);
+  const ServerFailure([super.m = 'Algo deu errado. Tente novamente.']);
 }
 class UnknownFailure extends Failure {
-  const UnknownFailure([String m = 'Erro inesperado.']) : super(m);
+  const UnknownFailure([super.m = 'Erro inesperado.']);
 }
