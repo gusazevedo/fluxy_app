@@ -29,18 +29,18 @@ GoRouter buildRouter(Ref ref) {
       }
     },
     routes: [
-      GoRoute(path: '/login', builder: (_, __) => const LoginPlaceholder()),
-      GoRoute(path: '/register', builder: (_, __) => Scaffold(body: PlaceholderScreen('Cadastro'))),
-      GoRoute(path: '/forgot-password', builder: (_, __) => Scaffold(body: PlaceholderScreen('Recuperar senha'))),
-      GoRoute(path: '/reset-password', builder: (_, __) => Scaffold(body: PlaceholderScreen('Nova senha'))),
-      GoRoute(path: '/verify-email', builder: (_, __) => Scaffold(body: PlaceholderScreen('Verificar e-mail'))),
+      GoRoute(path: '/login', builder: (_, _) => const LoginPlaceholder()),
+      GoRoute(path: '/register', builder: (_, _) => Scaffold(body: PlaceholderScreen('Cadastro'))),
+      GoRoute(path: '/forgot-password', builder: (_, _) => Scaffold(body: PlaceholderScreen('Recuperar senha'))),
+      GoRoute(path: '/reset-password', builder: (_, _) => Scaffold(body: PlaceholderScreen('Nova senha'))),
+      GoRoute(path: '/verify-email', builder: (_, _) => Scaffold(body: PlaceholderScreen('Verificar e-mail'))),
       ShellRoute(
-        builder: (_, __, child) => AppShell(child: child),
+        builder: (_, _, child) => AppShell(child: child),
         routes: [
-          GoRoute(path: '/', builder: (_, __) => const PlaceholderScreen('Início')),
-          GoRoute(path: '/transactions', builder: (_, __) => const PlaceholderScreen('Transações')),
-          GoRoute(path: '/categories', builder: (_, __) => const PlaceholderScreen('Categorias')),
-          GoRoute(path: '/account', builder: (_, __) => const PlaceholderScreen('Conta')),
+          GoRoute(path: '/', builder: (_, _) => const PlaceholderScreen('Início')),
+          GoRoute(path: '/transactions', builder: (_, _) => const PlaceholderScreen('Transações')),
+          GoRoute(path: '/categories', builder: (_, _) => const PlaceholderScreen('Categorias')),
+          GoRoute(path: '/account', builder: (_, _) => const PlaceholderScreen('Conta')),
         ],
       ),
     ],

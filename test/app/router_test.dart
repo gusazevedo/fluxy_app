@@ -33,4 +33,35 @@ void main() {
     await tester.pumpAndSettle();
     expect(router.routerDelegate.currentConfiguration.uri.path, '/');
   });
+
+  testWidgets('unverified lands on /verify-email', (tester) async {
+    final container = ProviderContainer(overrides: [
+      sessionStatusProvider.overrideWith((ref) => SessionStatus.unverified),
+    ]);
+    addTearDown(container.dispose);
+    final router = container.read(routerProvider);
+    await tester.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: MaterialApp.router(routerConfig: router),
+    ));
+    await tester.pumpAndSettle();
+    expect(router.routerDelegate.currentConfiguration.uri.path, '/verify-email');
+  });
+
+  testWidgets('authenticated on a public route redirects to /', (tester) async {
+    final container = ProviderContainer(overrides: [
+      sessionStatusProvider.overrideWith((ref) => SessionStatus.authenticated),
+    ]);
+    addTearDown(container.dispose);
+    final router = container.read(routerProvider);
+    await tester.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: MaterialApp.router(routerConfig: router),
+    ));
+    await tester.pumpAndSettle();
+    // Actively navigate to a public route; the guard must bounce it back to /.
+    router.go('/login');
+    await tester.pumpAndSettle();
+    expect(router.routerDelegate.currentConfiguration.uri.path, '/');
+  });
 }
