@@ -47,4 +47,10 @@ GoRouter buildRouter(Ref ref) {
   );
 }
 
+/// SPEC 02 WIRING NOTE: spec 02 must also add a router `refreshListenable` so
+/// that passive session-status changes (e.g. `onSessionExpired` firing) cause
+/// go_router to re-run `redirect` and bounce the user to /login.
+/// Without it, `redirect` only fires on explicit navigation events.
+/// Example: `ref.listen(sessionStatusProvider, (_, _) => router.refresh())`
+/// wired via a `ProviderObserver` or inside the provider itself.
 final routerProvider = Provider<GoRouter>((ref) => buildRouter(ref));

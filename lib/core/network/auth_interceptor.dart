@@ -11,6 +11,8 @@ bool _isPublicAuthRoute(String path) {
 }
 
 class AuthInterceptor extends Interceptor {
+  // Named initializing formals: callers use `onRefresh`/`onSessionExpired`
+  // (the leading underscore is stripped by Dart); the fields stay private.
   AuthInterceptor(
     this._storage, {
     required this._onRefresh,
@@ -67,13 +69,15 @@ class AuthInterceptor extends Interceptor {
     final opts = err.requestOptions
       ..extra['__retried'] = true
       ..headers['Authorization'] = 'Bearer $token';
+    // Use a throwaway Dio so the retry does not re-enter this interceptor.
+    final dio = Dio(BaseOptions(baseUrl: opts.baseUrl));
     try {
-      // Use a throwaway Dio so the retry does not re-enter this interceptor.
-      final dio = Dio(BaseOptions(baseUrl: opts.baseUrl));
       final res = await dio.fetch(opts);
       return handler.resolve(res);
     } on DioException catch (e) {
       return handler.next(e);
+    } finally {
+      dio.close();
     }
   }
 }
