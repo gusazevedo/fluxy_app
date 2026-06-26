@@ -6,41 +6,54 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fluxy_app/core/theme/app_theme.dart';
 import 'package:fluxy_app/core/theme/tokens.dart';
-import 'package:google_fonts/google_fonts.dart';
+
+// google_fonts runtime-fetch is disabled package-wide by
+// test/flutter_test_config.dart. The debugPrint noise it emits for fonts that
+// aren't bundled as assets is suppressed locally below: this is a plain
+// test() file (no testWidgets invariant check), so overriding debugPrint here
+// is safe and properly restored in tearDownAll.
 
 void main() {
-  late DebugPrintCallback _savedDebugPrint;
+  late DebugPrintCallback savedDebugPrint;
 
   setUpAll(() {
+    // Plain test() does not auto-init the binding; oswaldTextTheme() touches
+    // the asset bundle, which requires an initialized binding.
     TestWidgetsFlutterBinding.ensureInitialized();
-    GoogleFonts.config.allowRuntimeFetching = false;
-
-    // google_fonts 8.x emits multiple debugPrint() calls when a font is not
-    // found in app assets.  Silence those lines so the test output is pristine.
-    _savedDebugPrint = debugPrint;
+    savedDebugPrint = debugPrint;
     debugPrint = (String? message, {int? wrapWidth}) {
       if (message != null &&
           (message.contains('google_fonts') ||
               message.contains('unable to load font') ||
-              message.contains('troubleshooting'))) {
+              message.contains("troubleshooting doesn't solve the problem"))) {
         return;
       }
-      _savedDebugPrint(message, wrapWidth: wrapWidth);
+      savedDebugPrint(message, wrapWidth: wrapWidth);
     };
   });
 
   tearDownAll(() {
-    debugPrint = _savedDebugPrint;
+    debugPrint = savedDebugPrint;
   });
 
   test('dark theme uses brand tokens', () {
     late ThemeData t;
-    // runZonedGuarded catches the unawaited zone errors that google_fonts 8.x
-    // fires asynchronously from oswaldTextTheme(); the synchronous assertions
-    // below all pass before those errors settle.
+    // runZonedGuarded catches the unawaited zone error google_fonts 8.x fires
+    // asynchronously from oswaldTextTheme() (font not in app assets). Only that
+    // known noise is swallowed; any other zone error fails the test.
     runZonedGuarded(
       () { t = buildDarkTheme(); },
-      (_, __) {}, // suppress google_fonts font-load zone errors
+      (e, _) {
+        final msg = e.toString().toLowerCase();
+        if (msg.contains('google_fonts') ||
+            msg.contains('googlefonts') ||
+            msg.contains('allowruntimefetching') ||
+            msg.contains('unable to load font') ||
+            msg.contains('not found in the application assets')) {
+          return;
+        }
+        fail('Unexpected zone error: $e');
+      },
     );
     expect(t.brightness, Brightness.dark);
     expect(t.colorScheme.primary, AppColors.primary);
