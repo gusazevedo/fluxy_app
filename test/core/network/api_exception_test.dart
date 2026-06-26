@@ -36,4 +36,22 @@ void main() {
   test('500 -> ServerFailure', () {
     expect(failureFromDio(_http(500)), isA<ServerFailure>());
   });
+
+  test('message extraction falls back error -> detail', () {
+    expect(failureFromDio(_http(400, body: {'error': 'Falhou'})).message, 'Falhou');
+    expect(failureFromDio(_http(400, body: {'detail': 'Detalhe'})).message, 'Detalhe');
+  });
+
+  test('422 extracts field errors', () {
+    final f = failureFromDio(_http(422, body: {
+      'message': 'Inválido',
+      'errors': {'email': ['obrigatório', 'inválido']}
+    })) as ValidationFailure;
+    expect(f.fields['email'], ['obrigatório', 'inválido']);
+  });
+
+  test('404 and 409 map to NotFound/Conflict', () {
+    expect(failureFromDio(_http(404)), isA<NotFoundFailure>());
+    expect(failureFromDio(_http(409)), isA<ConflictFailure>());
+  });
 }

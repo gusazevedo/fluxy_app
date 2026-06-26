@@ -29,6 +29,8 @@ Failure failureFromDio(DioException e) {
     case DioExceptionType.receiveTimeout:
     case DioExceptionType.connectionError:
       return const NetworkFailure();
+    case DioExceptionType.cancel:
+      return const UnknownFailure('Requisição cancelada.');
     default:
       break;
   }
