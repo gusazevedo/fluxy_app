@@ -5,8 +5,9 @@ import '../storage/token_storage.dart';
 
 bool _isPublicAuthRoute(String path) {
   // /auth/* are public EXCEPT change-password.
-  if (!path.contains('/auth/')) return false;
-  return !path.contains('/auth/change-password');
+  // Prefix match so a path like /x/auth/y is not misclassified.
+  if (!path.startsWith('/auth/')) return false;
+  return !path.startsWith('/auth/change-password');
 }
 
 class AuthInterceptor extends Interceptor {
@@ -45,9 +46,17 @@ class AuthInterceptor extends Interceptor {
       return handler.next(err);
     }
 
-    final ok = await (_refreshing ??= _onRefresh().whenComplete(() {
-      _refreshing = null;
-    }));
+    // Guard a throwing refresh (offline / 500 on the refresh endpoint): a throw
+    // must be treated as refresh-failure, never escape onError and hang the
+    // original request. whenComplete still resets _refreshing across the throw.
+    bool ok;
+    try {
+      ok = await (_refreshing ??= _onRefresh().whenComplete(() {
+        _refreshing = null;
+      }));
+    } catch (_) {
+      ok = false;
+    }
 
     if (!ok) {
       _onSessionExpired();
