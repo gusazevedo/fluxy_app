@@ -19,7 +19,7 @@ class Money {
 
   /// Absolute, symbol-prefixed: `R$ 3.240,00`.
   /// Normalizes any non-breaking space (U+00A0) to a regular ASCII space.
-  String format() => _fmt.format(major.abs()).replaceAll(' ', ' ');
+  String format() => _fmt.format(major.abs()).replaceAll('\u{00A0}', ' ');
 
   /// `+R$ 5.100,00` (income) or `-R$ 1.200,00` (expense).
   String formatSigned(bool isExpense) => '${isExpense ? '-' : '+'}${format()}';

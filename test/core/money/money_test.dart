@@ -14,6 +14,10 @@ void main() {
     expect(Money(34000).format(), 'R\$ 340,00');
   });
 
+  test('format renders absolute value for negative cents', () {
+    expect(Money(-324000).format(), 'R\$ 3.240,00');
+  });
+
   test('formatSigned applies + for income and - for expense', () {
     expect(Money(510000).formatSigned(false), '+R\$ 5.100,00');
     expect(Money(120000).formatSigned(true), '-R\$ 1.200,00');
