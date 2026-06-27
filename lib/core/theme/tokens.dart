@@ -25,11 +25,18 @@ class AppRadii {
   static const button = 16.0;
   static const sheet = 28.0;
   static const fab = 20.0;
+  static const smBox = 12.0;
+  static const chip = 13.0;
+  static const chipSm = 8.0;
 }
 
 class AppSpacing {
+  static const xs = 4.0;
+  static const sm = 8.0;
+  static const gap = 12.0;
   static const screenH = 28.0;
   static const homeH = 22.0;
   static const md = 16.0;
   static const lg = 24.0;
+  static const xl = 38.0;
 }
