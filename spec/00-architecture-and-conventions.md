@@ -49,6 +49,20 @@ dev_dependencies:
 
 Codegen: `dart run build_runner build --delete-conflicting-outputs`.
 
+> **Toolchain decisions made during implementation (keep this honest):**
+> - **Fonts are bundled** (Oswald + Fjalla One as `assets/fonts/`); `google_fonts`
+>   was dropped (design-system Part 1).
+> - **Riverpod providers are hand-written** (`Notifier`/`NotifierProvider`/`Provider`),
+>   so `riverpod_generator` + `riverpod_annotation` were **removed**. Only `freezed`
+>   + `json_serializable` use codegen (models/DTOs); generated `*.freezed.dart` /
+>   `*.g.dart` are committed.
+> - **`freezed` is pinned to stable `^3.2.5`** (not the 3.2.6 pre-release).
+>   ⚠️ **Caveat:** `freezed 3.2.5` needs `analyzer <11`, but `riverpod_generator 4.x`
+>   needs `analyzer ^12`. Re-adding `@riverpod` codegen for a future feature would
+>   drag `freezed` back to the `3.2.6-dev` pre-release. If a feature truly needs
+>   `@riverpod`, reconcile this analyzer-version conflict first (or keep hand-writing
+>   providers).
+
 ## 3. Layered project structure
 
 ```
