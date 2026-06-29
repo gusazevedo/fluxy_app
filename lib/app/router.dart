@@ -5,6 +5,11 @@ import 'package:go_router/go_router.dart';
 import '../core/session/session_status.dart';
 import '../core/widgets/widgets.dart';
 import '../core/theme/tokens.dart';
+import '../features/auth/presentation/screens/login_screen.dart';
+import '../features/auth/presentation/screens/forgot_password_screen.dart';
+import '../features/auth/presentation/screens/register_screen.dart';
+import '../features/auth/presentation/screens/reset_password_screen.dart';
+import '../features/auth/presentation/screens/verify_email_screen.dart';
 import 'placeholder_screens.dart';
 import 'shell.dart';
 
@@ -33,11 +38,17 @@ GoRouter buildRouter(Ref ref, {Listenable? refreshListenable}) {
     },
     routes: [
       GoRoute(path: '/splash', builder: (_, _) => const SplashScreen()),
-      GoRoute(path: '/login', builder: (_, _) => const LoginPlaceholder()),
-      GoRoute(path: '/register', builder: (_, _) => Scaffold(body: PlaceholderScreen('Cadastro'))),
-      GoRoute(path: '/forgot-password', builder: (_, _) => Scaffold(body: PlaceholderScreen('Recuperar senha'))),
-      GoRoute(path: '/reset-password', builder: (_, _) => Scaffold(body: PlaceholderScreen('Nova senha'))),
-      GoRoute(path: '/verify-email', builder: (_, _) => Scaffold(body: PlaceholderScreen('Verificar e-mail'))),
+      GoRoute(path: '/login', builder: (_, _) => const LoginScreen()),
+      GoRoute(path: '/register', builder: (_, _) => const RegisterScreen()),
+      GoRoute(path: '/forgot-password', builder: (_, _) => const ForgotPasswordScreen()),
+      GoRoute(
+          path: '/reset-password',
+          builder: (_, state) =>
+              ResetPasswordScreen(email: state.uri.queryParameters['email'])),
+      GoRoute(
+          path: '/verify-email',
+          builder: (_, state) =>
+              VerifyEmailScreen(email: state.uri.queryParameters['email'] ?? '')),
       ShellRoute(
         builder: (_, _, child) => AppShell(child: child),
         routes: [

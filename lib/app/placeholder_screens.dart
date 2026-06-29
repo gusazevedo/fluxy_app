@@ -9,10 +9,3 @@ class PlaceholderScreen extends StatelessWidget {
   Widget build(BuildContext context) =>
       Center(child: Text(title, style: AppText.titleScreen));
 }
-
-class LoginPlaceholder extends StatelessWidget {
-  const LoginPlaceholder({super.key});
-  @override
-  Widget build(BuildContext context) =>
-      const Scaffold(body: PlaceholderScreen('Login (spec 02)'));
-}
