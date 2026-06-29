@@ -2,9 +2,11 @@
 export 'app_text_field.dart';
 export 'async_views.dart';
 export 'bottom_sheet_scaffold.dart';
+export 'category_icon_chip.dart';
 export 'identity.dart';
 export 'info_rows.dart';
 export 'link_button.dart';
 export 'otp_code_input.dart';
 export 'pressable_shadow_button.dart';
 export 'primary_button.dart';
+export 'segmented_toggle.dart';
