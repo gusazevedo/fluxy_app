@@ -1,5 +1,6 @@
 // lib/core/widgets/pressable_shadow_button.dart
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../theme/tokens.dart';
 
 class PressableShadowButton extends StatefulWidget {
@@ -11,6 +12,7 @@ class PressableShadowButton extends StatefulWidget {
     this.shadowColor = AppColors.primaryPressed,
     this.radius = AppRadii.button,
     this.padding = const EdgeInsets.all(16),
+    this.haptic = false,
   });
 
   final Widget child;
@@ -19,6 +21,9 @@ class PressableShadowButton extends StatefulWidget {
   final Color shadowColor;
   final double radius;
   final EdgeInsets padding;
+
+  /// Fires a light haptic the instant the finger touches down (not on release).
+  final bool haptic;
 
   @override
   State<PressableShadowButton> createState() => _PressableShadowButtonState();
@@ -32,13 +37,19 @@ class _PressableShadowButtonState extends State<PressableShadowButton> {
     if (_enabled && _down != v) setState(() => _down = v);
   }
 
+  void _onTapDown() {
+    if (!_enabled) return;
+    if (widget.haptic) HapticFeedback.lightImpact();
+    _set(true);
+  }
+
   @override
   Widget build(BuildContext context) {
     final pressed = _down && _enabled;
     return Opacity(
       opacity: _enabled ? 1 : 0.5,
       child: GestureDetector(
-        onTapDown: (_) => _set(true),
+        onTapDown: (_) => _onTapDown(),
         onTapUp: (_) => _set(false),
         onTapCancel: () => _set(false),
         onTap: widget.onPressed,

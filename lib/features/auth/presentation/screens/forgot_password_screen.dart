@@ -26,6 +26,9 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
     super.dispose();
   }
 
+  void _backToLogin() =>
+      context.canPop() ? context.pop() : context.go('/login');
+
   Future<void> _submit() async {
     final emailError = AuthValidators.email(_email.text);
     setState(() => _emailError = emailError);
@@ -42,7 +45,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
     final state = ref.watch(forgotPasswordControllerProvider);
     final loading = state.isLoading;
     return AuthScaffold(
-      leading: AppBackButton(onPressed: () => context.go('/login')),
+      leading: AppBackButton(onPressed: _backToLogin),
       children: [
         Text(AuthStrings.forgotTitle, style: AppText.titleScreen),
         const SizedBox(height: AppSpacing.sm),
@@ -67,7 +70,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
           child: InlineLink(
             leading: AuthStrings.rememberedPassword,
             action: AuthStrings.backToLogin,
-            onPressed: () => context.go('/login'),
+            onPressed: _backToLogin,
           ),
         ),
       ],

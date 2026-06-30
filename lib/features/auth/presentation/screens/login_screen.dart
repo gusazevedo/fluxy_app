@@ -72,7 +72,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           alignment: Alignment.centerRight,
           child: LinkButton(
             label: AuthStrings.forgotPassword,
-            onPressed: () => context.go('/forgot-password'),
+            onPressed: () => context.push('/forgot-password'),
           ),
         ),
         if (state.hasError) ...[
@@ -84,6 +84,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         PrimaryButton(
           label: AuthStrings.loginCta,
           loading: loading,
+          haptic: true,
           onPressed: loading ? null : _submit,
         ),
         const SizedBox(height: AppSpacing.lg),
@@ -91,7 +92,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           child: InlineLink(
             leading: AuthStrings.noAccount,
             action: AuthStrings.signUp,
-            onPressed: () => context.go('/register'),
+            onPressed: () => context.push('/register'),
           ),
         ),
       ],

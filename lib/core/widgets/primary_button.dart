@@ -5,11 +5,18 @@ import '../theme/tokens.dart';
 import 'pressable_shadow_button.dart';
 
 class PrimaryButton extends StatelessWidget {
-  const PrimaryButton({super.key, required this.label, required this.onPressed, this.loading = false});
+  const PrimaryButton({
+    super.key,
+    required this.label,
+    required this.onPressed,
+    this.loading = false,
+    this.haptic = false,
+  });
 
   final String label;
   final VoidCallback? onPressed;
   final bool loading;
+  final bool haptic;
 
   @override
   Widget build(BuildContext context) {
@@ -18,12 +25,25 @@ class PrimaryButton extends StatelessWidget {
       width: double.infinity,
       child: PressableShadowButton(
         onPressed: enabled ? onPressed : null,
+        haptic: haptic,
         child: loading
             ? const SizedBox(
-                height: 22, width: 22,
-                child: CircularProgressIndicator(strokeWidth: 2.5, color: AppColors.onPrimary))
-            : Text(label, textAlign: TextAlign.center,
-                style: AppText.bodyStrong.copyWith(color: AppColors.onPrimary, fontSize: 16, fontWeight: FontWeight.w700)),
+                height: 22,
+                width: 22,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.5,
+                  color: AppColors.onPrimary,
+                ),
+              )
+            : Text(
+                label,
+                textAlign: TextAlign.center,
+                style: AppText.bodyStrong.copyWith(
+                  color: AppColors.onPrimary,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
       ),
     );
   }
