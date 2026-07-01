@@ -19,3 +19,8 @@ final activeCategoriesProvider =
       .watch(categoriesRepositoryProvider)
       .list(kind: kind, includeArchived: false);
 });
+
+/// All active categories (both kinds), for the list filter's category dropdown.
+final allActiveCategoriesProvider = FutureProvider<List<Category>>((ref) {
+  return ref.watch(categoriesRepositoryProvider).list(includeArchived: false);
+});

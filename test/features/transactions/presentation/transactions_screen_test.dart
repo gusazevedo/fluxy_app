@@ -59,6 +59,8 @@ void main() {
             ));
     when(() => cat.list(includeArchived: true))
         .thenAnswer((_) async => [_cat('c1', 'Mercado')]);
+    when(() => cat.list(includeArchived: false))
+        .thenAnswer((_) async => [_cat('c1', 'Mercado')]);
 
     await tester.pumpWidget(_host(tx, cat));
     await tester.pumpAndSettle();
@@ -80,6 +82,8 @@ void main() {
             ));
     when(() => cat.list(includeArchived: true))
         .thenAnswer((_) async => [_cat('c1', 'Mercado')]);
+    when(() => cat.list(includeArchived: false))
+        .thenAnswer((_) async => [_cat('c1', 'Mercado')]);
     when(() => cat.list(kind: CategoryKind.expense, includeArchived: false))
         .thenAnswer((_) async => [_cat('c1', 'Mercado')]);
 
@@ -100,10 +104,43 @@ void main() {
             (_) async => const TransactionsPage(items: [], nextCursor: null));
     when(() => cat.list(includeArchived: true))
         .thenAnswer((_) async => const <Category>[]);
+    when(() => cat.list(includeArchived: false))
+        .thenAnswer((_) async => const <Category>[]);
 
     await tester.pumpWidget(_host(tx, cat));
     await tester.pumpAndSettle();
 
     expect(find.text(TransactionsStrings.empty), findsOneWidget);
+  });
+
+  testWidgets('tapping Despesa refetches with the expense kind', (tester) async {
+    final tx = _MockTxRepo();
+    final cat = _MockCatRepo();
+    when(() => tx.list(kind: null, categoryId: null, from: null, to: null))
+        .thenAnswer(
+            (_) async => const TransactionsPage(items: [], nextCursor: null));
+    when(() => tx.list(
+            kind: CategoryKind.expense,
+            categoryId: null,
+            from: null,
+            to: null))
+        .thenAnswer(
+            (_) async => const TransactionsPage(items: [], nextCursor: null));
+    when(() => cat.list(includeArchived: true))
+        .thenAnswer((_) async => const <Category>[]);
+    when(() => cat.list(includeArchived: false))
+        .thenAnswer((_) async => const <Category>[]);
+
+    await tester.pumpWidget(_host(tx, cat));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text(TransactionsStrings.expense));
+    await tester.pumpAndSettle();
+
+    verify(() => tx.list(
+        kind: CategoryKind.expense,
+        categoryId: null,
+        from: null,
+        to: null)).called(1);
   });
 }

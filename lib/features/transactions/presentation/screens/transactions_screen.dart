@@ -10,6 +10,7 @@ import '../../domain/transaction.dart';
 import '../providers.dart';
 import '../transactions_controller.dart';
 import '../transactions_strings.dart';
+import '../widgets/transaction_filter_bar.dart';
 import '../widgets/transaction_form_sheet.dart';
 import '../widgets/transaction_row.dart';
 
@@ -22,6 +23,8 @@ class TransactionsScreen extends ConsumerStatefulWidget {
 
 class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
   final _scroll = ScrollController();
+  TransactionFilter _filter =
+      (kind: null, categoryId: null, from: null, to: null);
 
   @override
   void initState() {
@@ -47,6 +50,11 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
         child: TransactionFormSheet(existing: tx),
       );
 
+  void _applyFilter(TransactionFilter filter) {
+    setState(() => _filter = filter);
+    ref.read(transactionsControllerProvider.notifier).setFilter(filter);
+  }
+
   Future<void> _loadMore() async {
     try {
       await ref.read(transactionsControllerProvider.notifier).loadMore();
@@ -70,7 +78,9 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
           children: [
             const SizedBox(height: AppSpacing.lg),
             Text(TransactionsStrings.tab, style: AppText.titleScreen),
-            const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.md),
+            TransactionFilterBar(filter: _filter, onChanged: _applyFilter),
+            const SizedBox(height: AppSpacing.md),
             Expanded(
               child: state.when(
                 loading: () => const AppLoader(),
