@@ -1,5 +1,6 @@
 // lib/core/widgets/app_text_field.dart
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../theme/app_theme.dart';
 import '../theme/tokens.dart';
 
@@ -13,6 +14,7 @@ class AppTextField extends StatelessWidget {
     this.obscure = false,
     this.trailing,
     this.keyboardType,
+    this.inputFormatters,
     this.onChanged,
   });
 
@@ -23,6 +25,7 @@ class AppTextField extends StatelessWidget {
   final bool obscure;
   final Widget? trailing;
   final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
   final ValueChanged<String>? onChanged;
 
   @override
@@ -50,6 +53,7 @@ class AppTextField extends StatelessWidget {
                   controller: controller,
                   obscureText: obscure,
                   keyboardType: keyboardType,
+                  inputFormatters: inputFormatters,
                   onChanged: onChanged,
                   style: AppText.bodyStrong,
                   cursorColor: AppColors.primary,

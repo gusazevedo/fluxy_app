@@ -1,9 +1,13 @@
 // lib/app/shell.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../core/theme/tokens.dart';
+import '../core/widgets/widgets.dart';
+import '../features/transactions/presentation/transactions_strings.dart';
+import '../features/transactions/presentation/widgets/transaction_form_sheet.dart';
 
-class AppShell extends StatelessWidget {
+class AppShell extends ConsumerWidget {
   const AppShell({super.key, required this.child});
   final Widget child;
 
@@ -15,14 +19,18 @@ class AppShell extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final location = GoRouterState.of(context).uri.path;
     return Scaffold(
       body: child,
       floatingActionButton: (location == '/' || location.startsWith('/transactions'))
           ? FloatingActionButton(
               backgroundColor: AppColors.primary,
-              onPressed: () {/* Nova transação sheet — spec 04 */},
+              onPressed: () => showFluxySheet(
+                context,
+                title: TransactionsStrings.newTransaction,
+                child: const TransactionFormSheet(),
+              ),
               child: const Icon(Icons.add, color: AppColors.onPrimary),
             )
           : null,
