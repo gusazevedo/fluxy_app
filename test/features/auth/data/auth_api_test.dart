@@ -39,14 +39,14 @@ void main() {
         data: {'email': 'a@b.co', 'password': 'secret123'})).called(1);
   });
 
-  test('verifyEmail posts the code under the {token} key', () async {
+  test('verifyEmail posts email + code', () async {
     when(() => dio.post('/auth/verify-email', data: any(named: 'data')))
         .thenAnswer((_) async => _resp('/auth/verify-email', {'message': 'ok'}));
 
-    await api.verifyEmail('123456');
+    await api.verifyEmail(email: 'a@b.co', code: '123456');
 
-    verify(() => dio.post('/auth/verify-email', data: {'token': '123456'}))
-        .called(1);
+    verify(() => dio.post('/auth/verify-email',
+        data: {'email': 'a@b.co', 'code': '123456'})).called(1);
   });
 
   test('resetPassword posts token + password', () async {

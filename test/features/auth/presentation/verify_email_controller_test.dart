@@ -47,26 +47,29 @@ void main() {
   test('verify success calls repo.verifyEmail then refreshUser (via repo.me)',
       () async {
     final repo = _MockRepo();
-    when(() => repo.verifyEmail('123456')).thenAnswer((_) async {});
+    when(() => repo.verifyEmail('a@b.co', '123456'))
+        .thenAnswer((_) async {});
     when(() => repo.me()).thenAnswer((_) async => _user());
     final c = _container(repo);
 
-    final ok =
-        await c.read(verifyEmailControllerProvider.notifier).verify('123456');
+    final ok = await c
+        .read(verifyEmailControllerProvider.notifier)
+        .verify('a@b.co', '123456');
 
     expect(ok, true);
-    verify(() => repo.verifyEmail('123456')).called(1);
+    verify(() => repo.verifyEmail('a@b.co', '123456')).called(1);
     verify(() => repo.me()).called(1);
   });
 
   test('an invalid code → AsyncError with the friendly message', () async {
     final repo = _MockRepo();
-    when(() => repo.verifyEmail(any()))
+    when(() => repo.verifyEmail(any(), any()))
         .thenThrow(const ValidationFailure('bad'));
     final c = _container(repo);
 
-    final ok =
-        await c.read(verifyEmailControllerProvider.notifier).verify('000000');
+    final ok = await c
+        .read(verifyEmailControllerProvider.notifier)
+        .verify('a@b.co', '000000');
 
     expect(ok, false);
     expect(

@@ -40,7 +40,7 @@ Widget _host(_MockRepo repo) => UncontrolledProviderScope(
 void main() {
   testWidgets('entering 6 digits auto-submits to repo.verifyEmail', (tester) async {
     final repo = _MockRepo();
-    when(() => repo.verifyEmail(any())).thenAnswer((_) async {});
+    when(() => repo.verifyEmail(any(), any())).thenAnswer((_) async {});
     when(() => repo.me()).thenAnswer((_) async => _user());
     await tester.pumpWidget(_host(repo));
     expect(find.byType(OtpCodeInput), findsOneWidget);
@@ -51,7 +51,7 @@ void main() {
       await tester.pump();
     }
     await tester.pump();
-    verify(() => repo.verifyEmail('123456')).called(1);
+    verify(() => repo.verifyEmail('a@b.co', '123456')).called(1);
   });
 
   testWidgets('resend starts a cooldown that disables the button', (tester) async {

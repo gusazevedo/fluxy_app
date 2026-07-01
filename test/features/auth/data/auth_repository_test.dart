@@ -90,10 +90,11 @@ void main() {
     expect(storage.refresh, isNull);
   });
 
-  test('verifyEmail delegates the code to the API', () async {
-    when(() => api.verifyEmail('123456')).thenAnswer((_) async {});
-    await repo.verifyEmail('123456');
-    verify(() => api.verifyEmail('123456')).called(1);
+  test('verifyEmail delegates email + code to the API', () async {
+    when(() => api.verifyEmail(email: 'a@b.co', code: '123456'))
+        .thenAnswer((_) async {});
+    await repo.verifyEmail('a@b.co', '123456');
+    verify(() => api.verifyEmail(email: 'a@b.co', code: '123456')).called(1);
   });
 
   test('non-DioException from API is mapped to a Failure (robust _guard)', () async {

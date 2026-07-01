@@ -46,7 +46,9 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
   }
 
   Future<void> _onCompleted(String code) async {
-    final ok = await ref.read(verifyEmailControllerProvider.notifier).verify(code);
+    final ok = await ref
+        .read(verifyEmailControllerProvider.notifier)
+        .verify(widget.email, code);
     if (!ok || !mounted) return;
     // If a session exists the router redirects to the shell automatically;
     // when there is no session (came from register), go to login.
