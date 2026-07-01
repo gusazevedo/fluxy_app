@@ -11,6 +11,7 @@ import '../features/auth/presentation/screens/register_screen.dart';
 import '../features/auth/presentation/screens/reset_password_screen.dart';
 import '../features/auth/presentation/screens/verify_email_screen.dart';
 import '../features/categories/presentation/screens/categories_screen.dart';
+import '../features/transactions/presentation/screens/transactions_screen.dart';
 import 'placeholder_screens.dart';
 import 'shell.dart';
 
@@ -54,7 +55,7 @@ GoRouter buildRouter(Ref ref, {Listenable? refreshListenable}) {
         builder: (_, _, child) => AppShell(child: child),
         routes: [
           GoRoute(path: '/', builder: (_, _) => const PlaceholderScreen('Início')),
-          GoRoute(path: '/transactions', builder: (_, _) => const PlaceholderScreen('Transações')),
+          GoRoute(path: '/transactions', builder: (_, _) => const TransactionsScreen()),
           GoRoute(path: '/categories', builder: (_, _) => const CategoriesScreen()),
           GoRoute(path: '/account', builder: (_, _) => const PlaceholderScreen('Conta')),
         ],
