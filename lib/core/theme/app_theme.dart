@@ -13,8 +13,8 @@ class AppText {
   static const titleSection = TextStyle(fontFamily: _ui, fontSize: 20, fontWeight: FontWeight.w700, color: AppColors.textPrimary, letterSpacing: -0.4);
   static const titleList = TextStyle(fontFamily: _ui, fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.textPrimary, letterSpacing: -0.3);
   static const dateAnchor = TextStyle(fontFamily: _ui, fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.textPrimary, letterSpacing: 0.3);
-  static const body = TextStyle(fontFamily: _ui, fontSize: 15, color: AppColors.textMuted);
-  static const bodyStrong = TextStyle(fontFamily: _ui, fontSize: 15, fontWeight: FontWeight.w500, color: AppColors.textPrimary);
+  static const body = TextStyle(fontFamily: _ui, fontSize: 17, color: AppColors.textMuted);
+  static const bodyStrong = TextStyle(fontFamily: _ui, fontSize: 17, fontWeight: FontWeight.w500, color: AppColors.textPrimary);
   static const label = TextStyle(fontFamily: _ui, fontSize: 13, color: AppColors.textMuted);
   static const caption = TextStyle(fontFamily: _ui, fontSize: 12.5, color: AppColors.textMuted);
   static const hint = TextStyle(fontFamily: _ui, fontSize: 11.5, color: AppColors.textHint);

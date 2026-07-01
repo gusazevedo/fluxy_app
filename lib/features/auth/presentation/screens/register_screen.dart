@@ -35,6 +35,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     super.dispose();
   }
 
+  void _backToLogin() =>
+      context.canPop() ? context.pop() : context.go('/login');
+
   Future<void> _submit() async {
     final firstErr = AuthValidators.name(_first.text);
     final lastErr = AuthValidators.name(_last.text);
@@ -70,7 +73,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     final state = ref.watch(registerControllerProvider);
     final loading = state.isLoading;
     return AuthScaffold(
-      leading: AppBackButton(onPressed: () => context.go('/login')),
+      leading: AppBackButton(onPressed: _backToLogin),
       children: [
         Text(AuthStrings.registerTitle, style: AppText.titleScreen),
         const SizedBox(height: AppSpacing.sm),
@@ -104,7 +107,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           child: InlineLink(
             leading: AuthStrings.haveAccount,
             action: AuthStrings.signIn,
-            onPressed: () => context.go('/login'),
+            onPressed: _backToLogin,
           ),
         ),
       ],

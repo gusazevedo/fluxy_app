@@ -9,10 +9,10 @@ class VerifyEmailController extends Notifier<AsyncValue<void>> {
   @override
   AsyncValue<void> build() => const AsyncData(null);
 
-  Future<bool> verify(String code) async {
+  Future<bool> verify(String email, String code) async {
     state = const AsyncLoading();
     try {
-      await ref.read(authRepositoryProvider).verifyEmail(code);
+      await ref.read(authRepositoryProvider).verifyEmail(email, code);
       await ref.read(authControllerProvider.notifier).refreshUser();
       if (!ref.mounted) return false;
       state = const AsyncData(null);

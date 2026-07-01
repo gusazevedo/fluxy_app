@@ -28,5 +28,13 @@ void main() {
     await tester.tap(find.text(AuthStrings.signUp));
     await tester.pumpAndSettle();
     expect(find.byType(RegisterScreen), findsOneWidget);
+
+    // Register is pushed onto the stack, so "Entrar" pops back to Login.
+    final signIn = find.text(AuthStrings.signIn);
+    await tester.ensureVisible(signIn);
+    await tester.tap(signIn);
+    await tester.pumpAndSettle();
+    expect(find.byType(LoginScreen), findsOneWidget);
+    expect(find.byType(RegisterScreen), findsNothing);
   });
 }

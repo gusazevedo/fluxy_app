@@ -32,7 +32,8 @@ class AuthRepository {
         password: input.password,
       ));
 
-  Future<void> verifyEmail(String code) => _guard(() => _api.verifyEmail(code));
+  Future<void> verifyEmail(String email, String code) =>
+      _guard(() => _api.verifyEmail(email: email, code: code));
 
   Future<void> resendVerification(String email) =>
       _guard(() => _api.resendVerification(email));

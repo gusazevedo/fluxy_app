@@ -22,8 +22,8 @@ class AuthApi {
         'password': password,
       });
 
-  Future<void> verifyEmail(String code) =>
-      _dio.post('/auth/verify-email', data: {'token': code});
+  Future<void> verifyEmail({required String email, required String code}) =>
+      _dio.post('/auth/verify-email', data: {'email': email, 'code': code});
 
   Future<void> resendVerification(String email) =>
       _dio.post('/auth/verify-email/resend', data: {'email': email});
