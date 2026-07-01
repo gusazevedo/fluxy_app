@@ -12,6 +12,7 @@ import '../providers.dart';
 import '../transaction_validators.dart';
 import '../transactions_controller.dart';
 import '../transactions_strings.dart';
+import 'delete_transaction_dialog.dart';
 
 /// Body of the "Nova transação" / "Editar transação" sheet. Pass [existing] to
 /// edit; otherwise it creates. The kind toggle drives which categories the
@@ -118,6 +119,27 @@ class _TransactionFormSheetState extends ConsumerState<TransactionFormSheet> {
     }
   }
 
+  Future<void> _delete() async {
+    final ok = await showDeleteTransactionDialog(context);
+    if (!ok || !mounted) return;
+    setState(() {
+      _busy = true;
+      _formErr = null;
+    });
+    try {
+      await ref
+          .read(transactionsControllerProvider.notifier)
+          .remove(widget.existing!.id);
+      if (mounted) Navigator.pop(context);
+    } on Failure catch (f) {
+      if (!mounted) return;
+      setState(() {
+        _busy = false;
+        _formErr = _messageFor(f);
+      });
+    }
+  }
+
   String _messageFor(Failure f) {
     if (f is NotFoundFailure) return TransactionsStrings.notFound;
     // 409 (archived / kind mismatch) and 400 (invalid amount) carry a
@@ -180,6 +202,16 @@ class _TransactionFormSheetState extends ConsumerState<TransactionFormSheet> {
           loading: _busy,
           onPressed: _busy ? null : _submit,
         ),
+        if (!widget.isCreate) ...[
+          const SizedBox(height: AppSpacing.sm),
+          Center(
+            child: TextButton(
+              onPressed: _busy ? null : _delete,
+              child: Text(TransactionsStrings.delete,
+                  style: AppText.bodyStrong.copyWith(color: AppColors.expense)),
+            ),
+          ),
+        ],
       ],
     );
   }

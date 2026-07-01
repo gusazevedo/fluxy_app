@@ -33,13 +33,20 @@ Transaction _tx(String id) => Transaction(
       createdAt: DateTime.utc(2026, 6, 30, 12),
     );
 
-Future<void> _pump(WidgetTester tester, _MockTxRepo tx, _MockCatRepo cat) async {
+Future<void> _pump(
+  WidgetTester tester,
+  _MockTxRepo tx,
+  _MockCatRepo cat, {
+  Transaction? existing,
+}) async {
   await tester.pumpWidget(ProviderScope(
     overrides: [
       transactionsRepositoryProvider.overrideWithValue(tx),
       categoriesRepositoryProvider.overrideWithValue(cat),
     ],
-    child: const MaterialApp(home: Scaffold(body: TransactionFormSheet())),
+    child: MaterialApp(
+      home: Scaffold(body: TransactionFormSheet(existing: existing)),
+    ),
   ));
   await tester.pumpAndSettle();
 }
@@ -106,5 +113,65 @@ void main() {
           occurredAt: any(named: 'occurredAt'),
           description: null,
         )).called(1);
+  });
+
+  testWidgets('edit pre-fills and saves the changed amount', (tester) async {
+    final tx = _MockTxRepo();
+    final cat = _MockCatRepo();
+    when(() => cat.list(kind: CategoryKind.expense, includeArchived: false))
+        .thenAnswer((_) async => [_cat('c1', 'Mercado')]);
+    when(() => tx.list(kind: null, categoryId: null, from: null, to: null))
+        .thenAnswer(
+            (_) async => TransactionsPage(items: [_tx('t1')], nextCursor: null));
+    when(() => tx.update(
+          't1',
+          amountCents: 2000,
+          kind: CategoryKind.expense,
+          categoryId: 'c1',
+          occurredAt: any(named: 'occurredAt'),
+          description: null,
+          clearDescription: true,
+        )).thenAnswer((_) async => _tx('t1'));
+    await _pump(tester, tx, cat, existing: _tx('t1'));
+
+    // Pre-filled from the existing amount (1234 cents) and category.
+    expect(find.text('12,34'), findsOneWidget);
+    expect(find.text('Mercado'), findsOneWidget);
+    expect(find.text(TransactionsStrings.save), findsOneWidget);
+
+    await tester.enterText(find.byType(TextField).first, '20,00');
+    await tester.tap(find.text(TransactionsStrings.save));
+    await tester.pumpAndSettle();
+
+    verify(() => tx.update(
+          't1',
+          amountCents: 2000,
+          kind: CategoryKind.expense,
+          categoryId: 'c1',
+          occurredAt: any(named: 'occurredAt'),
+          description: null,
+          clearDescription: true,
+        )).called(1);
+  });
+
+  testWidgets('delete confirms then removes the transaction', (tester) async {
+    final tx = _MockTxRepo();
+    final cat = _MockCatRepo();
+    when(() => cat.list(kind: CategoryKind.expense, includeArchived: false))
+        .thenAnswer((_) async => [_cat('c1', 'Mercado')]);
+    when(() => tx.list(kind: null, categoryId: null, from: null, to: null))
+        .thenAnswer(
+            (_) async => TransactionsPage(items: [_tx('t1')], nextCursor: null));
+    when(() => tx.delete('t1')).thenAnswer((_) async {});
+    await _pump(tester, tx, cat, existing: _tx('t1'));
+
+    // Tap the sheet's "Excluir", then confirm in the dialog.
+    await tester.tap(find.text(TransactionsStrings.delete));
+    await tester.pumpAndSettle();
+    expect(find.text(TransactionsStrings.deleteConfirmTitle), findsOneWidget);
+    await tester.tap(find.text(TransactionsStrings.delete).last);
+    await tester.pumpAndSettle();
+
+    verify(() => tx.delete('t1')).called(1);
   });
 }

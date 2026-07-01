@@ -10,6 +10,7 @@ import '../../domain/transaction.dart';
 import '../providers.dart';
 import '../transactions_controller.dart';
 import '../transactions_strings.dart';
+import '../widgets/transaction_form_sheet.dart';
 import '../widgets/transaction_row.dart';
 
 class TransactionsScreen extends ConsumerStatefulWidget {
@@ -39,6 +40,12 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
     final pos = _scroll.position;
     if (pos.pixels >= pos.maxScrollExtent - 320) _loadMore();
   }
+
+  void _edit(Transaction tx) => showFluxySheet(
+        context,
+        title: TransactionsStrings.editTitle,
+        child: TransactionFormSheet(existing: tx),
+      );
 
   Future<void> _loadMore() async {
     try {
@@ -83,6 +90,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                         entries: _buildEntries(data.items),
                         names: names,
                         loadingMore: data.loadingMore,
+                        onTap: _edit,
                         onRefresh: () => ref
                             .read(transactionsControllerProvider.notifier)
                             .refresh(),
@@ -122,6 +130,7 @@ class _TransactionsList extends StatelessWidget {
     required this.entries,
     required this.names,
     required this.loadingMore,
+    required this.onTap,
     required this.onRefresh,
   });
 
@@ -129,6 +138,7 @@ class _TransactionsList extends StatelessWidget {
   final List<Object> entries;
   final Map<String, String> names;
   final bool loadingMore;
+  final ValueChanged<Transaction> onTap;
   final Future<void> Function() onRefresh;
 
   @override
@@ -163,6 +173,7 @@ class _TransactionsList extends StatelessWidget {
             child: TransactionRow(
               transaction: tx,
               categoryName: names[tx.categoryId] ?? '',
+              onTap: () => onTap(tx),
             ),
           );
         },

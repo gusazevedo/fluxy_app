@@ -70,6 +70,28 @@ void main() {
     expect(find.text('10 mar 2024'), findsOneWidget); // day header
   });
 
+  testWidgets('tapping a row opens the edit sheet', (tester) async {
+    final tx = _MockTxRepo();
+    final cat = _MockCatRepo();
+    when(() => tx.list(kind: null, categoryId: null, from: null, to: null))
+        .thenAnswer((_) async => TransactionsPage(
+              items: [_tx('t1', DateTime(2024, 3, 15))],
+              nextCursor: null,
+            ));
+    when(() => cat.list(includeArchived: true))
+        .thenAnswer((_) async => [_cat('c1', 'Mercado')]);
+    when(() => cat.list(kind: CategoryKind.expense, includeArchived: false))
+        .thenAnswer((_) async => [_cat('c1', 'Mercado')]);
+
+    await tester.pumpWidget(_host(tx, cat));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byType(TransactionRow));
+    await tester.pumpAndSettle();
+
+    expect(find.text(TransactionsStrings.editTitle), findsOneWidget);
+  });
+
   testWidgets('empty list shows the empty state', (tester) async {
     final tx = _MockTxRepo();
     final cat = _MockCatRepo();
